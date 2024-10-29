@@ -10,9 +10,13 @@ function handleConnection(socket, io, filter) {
       return;
     }
 
-    if (CHAT_ROOMS[room].protected && password !== process.env.ADMIN_ROOM_PASSWORD) {
-      socket.emit('error', 'Invalid password');
-      return;
+    // Check if the room is protected
+    if (CHAT_ROOMS[room].protected) {
+      // Validate password
+      if (password !== process.env.ADMIN_ROOM_PASSWORD) {
+        socket.emit('error', 'Invalid password');
+        return;
+      }
     }
 
     // Leave previous rooms
@@ -21,17 +25,15 @@ function handleConnection(socket, io, filter) {
         socket.leave(prevRoom);
       }
     });
-
     // Join new room
     socket.join(room);
     connectedUsers.set(socket.id, { username, room });
-
+    
     // Broadcast join message
     socket.to(room).emit('user_joined', {
       message: `${username} has joined the room`,
       timestamp: new Date(),
     });
-
     // Send welcome message
     socket.emit('room_joined', {
       room,
@@ -40,7 +42,7 @@ function handleConnection(socket, io, filter) {
   });
 
   socket.on('send_message', (data) => handleMessage(socket, io, filter, data));
-
+  
   socket.on('disconnect', () => {
     const user = connectedUsers.get(socket.id);
     if (user) {

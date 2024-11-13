@@ -17,7 +17,7 @@ setupMiddleware(app);
 // Socket.IO setup with CORS
 const io = new Server(server, {
   cors: {
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: process.env.FRONTEND_URL || 'https://lolchat.app.sctech.localplayer.dev',
     methods: ['GET', 'POST']
   }
 });

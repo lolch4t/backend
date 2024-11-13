@@ -4,7 +4,7 @@ const express = require('express');
 function setupMiddleware(app) {
   // Enable CORS
   app.use(cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000'
+    origin: process.env.FRONTEND_URL || 'https://lolchat.app.sctech.localplayer.dev'
   }));
 
   // Parse JSON bodies
